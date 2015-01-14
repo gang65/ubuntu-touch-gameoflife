@@ -1,0 +1,15 @@
+{
+    "architecture": "all",
+    "description": "description of gameolife",
+    "framework": "ubuntu-sdk-14.10-dev2",
+    "hooks": {
+        "gameoflife": {
+            "apparmor": "gameoflife.apparmor",
+            "desktop": "gameoflife.desktop"
+        }
+    },
+    "maintainer": "Sturm Flut",
+    "name": "com.ubuntu.developer.sturmflut.gameolife",
+    "title": "gameolife",
+    "version": "0.1"
+}
