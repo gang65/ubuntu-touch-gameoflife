@@ -1,8 +1,7 @@
 [Desktop Entry]
-Name=gameoflife
+Name=Game of Life
 Exec=qmlscene $@ main.qml
 Icon=gameolife.png
 Terminal=false
 Type=Application
 X-Ubuntu-Touch=true
-

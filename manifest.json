@@ -1,15 +1,15 @@
 {
     "architecture": "all",
-    "description": "description of gameolife",
-    "framework": "ubuntu-sdk-14.10-dev2",
+    "description": "Conway's Game of Life",
+    "framework": "ubuntu-sdk-14.10",
     "hooks": {
         "gameoflife": {
             "apparmor": "gameoflife.apparmor",
             "desktop": "gameoflife.desktop"
         }
     },
-    "maintainer": "Sturm Flut",
-    "name": "com.ubuntu.developer.sturmflut.gameolife",
-    "title": "gameolife",
-    "version": "0.1"
+    "maintainer": "Sturm Flut <sturmflut@lieberbiber.de>",
+    "name": "com.ubuntu.developer.sturmflut.gameoflife",
+    "title": "Game of Life",
+    "version": "0.1.1"
 }
