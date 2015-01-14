@@ -10,13 +10,8 @@ Page {
     title: i18n.tr("Game of Life")
 
 
-    QtObject {
+    Constants {
         id: constants
-
-        property int size: 50
-
-        property color deadColor: "black"
-        property color aliveColor: "blue"
     }
 
 
@@ -99,8 +94,6 @@ Page {
             else
                 realy = y % constants.size
 
-            //console.log("Pixel " + realx + " " + realy + " " + internal.oldState[realy * constants.size + realx])
-
             return internal.oldState[realy * constants.size + realx]
         }
 
@@ -125,8 +118,6 @@ Page {
         {
             var numNeighbors = countNeighbors(x, y)
 
-            //console.log("Neighbors: " + x + " " + y + " " + getOldState(x, y) + " " + numNeighbors)
-
             if(numNeighbors === 3)
                 return true
 
@@ -148,7 +139,6 @@ Page {
                 for(var x = 0; x < constants.size; x++)
                 {
                     internal.state[y * constants.size + x] = processCell(x, y)
-                    //console.log(x + " " + y + " " + internal.state[y * constants.size + x])
                 }
         }
     }
