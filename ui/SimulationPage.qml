@@ -94,6 +94,9 @@ Page {
 
                     pixelGrid.randomize()
 
+                    internal.running = true
+                    pauseButton.iconName = "media-playback-pause"
+
                     timer.start()
                 }
             }
