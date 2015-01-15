@@ -5,5 +5,5 @@ QtObject {
     readonly property int size: 50
 
     readonly property color deadColor: "black"
-    readonly property color aliveColor: "blue"
+    readonly property var aliveColors: [ "blue", "green", "red", "yellow", "orange", "cyan", "white" ]
 }

@@ -28,13 +28,7 @@ Grid {
             width: pixelGrid.width / pixelGrid.columns
 
             property color finalColor: color
-
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: UbuntuAnimation.FastDuration
-                }
-            }
+            property int pixelIndex
 
 
             function getColor() {
@@ -67,7 +61,10 @@ Grid {
 
             // Create pixels
             for(var i = 0; i < pixelGrid.columns * pixelGrid.rows; i++)
+            {
                 var newPixel = pixelComponent.createObject(pixelGrid)
+                newPixel.pixelIndex = i
+            }
         }
     }
 
