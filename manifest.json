@@ -1,7 +1,7 @@
 {
     "architecture": "all",
     "description": "Conway's Game of Life",
-    "framework": "ubuntu-sdk-14.10",
+    "framework": "ubuntu-sdk-15.04",
     "hooks": {
         "gameoflife": {
             "apparmor": "gameoflife.apparmor",
@@ -11,5 +11,5 @@
     "maintainer": "Sturm Flut <sturmflut@lieberbiber.de>",
     "name": "com.ubuntu.developer.sturmflut.gameoflife",
     "title": "Game of Life",
-    "version": "0.3.1"
+    "version": "0.3.2"
 }
