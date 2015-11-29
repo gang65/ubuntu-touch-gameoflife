@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 
 
 /*!
@@ -13,17 +13,61 @@ Page {
     head.actions: [
 
         Action {
+            id: pauseAction
+
+            iconName: "media-playback-pause"
+            text: i18n.tr("Pause")
+
+            onTriggered: {
+                if(internal.running)
+                {
+                    internal.running = false
+                    timer.stop()
+
+                    iconName = "media-playback-start"
+                    nextStepAction.enabled = true
+                }
+                else
+                {
+                    internal.running = true
+
+                    nextStepAction.enabled = false
+                    iconName = "media-playback-pause"
+                }
+
+                console.log("Paused")
+            }
+        },
+
+        Action {
+            id: nextStepAction
+
+            iconName: "media-seek-forward"
+            text: i18n.tr("Forward")
+
+            enabled: false
+
+            onTriggered: {
+                pixelGrid.update()
+                pixelGrid.drawCells()
+            }
+        },
+
+        Action {
             iconName: "reload"
             text: i18n.tr("Reload")
+
             onTriggered: {
-                timer.stop()
+                internal.running = false
 
                 pixelGrid.randomize()
 
-                internal.running = true
-                pauseButton.iconName = "media-playback-pause"
+                pauseAction.iconName = "media-playback-pause"
 
-                timer.start()
+                pixelGrid.update()
+                pixelGrid.drawCells()
+
+                internal.running = true
             }
         }
     ]
@@ -36,13 +80,29 @@ Page {
     QtObject {
         id: internal
 
-        property bool running: true
+        property bool running: false
 
         property int currentColor: 0
-        property int gameSpeed: 700
+        property int gameSpeed: 4
 
         property var state: []
         property var oldState: []
+    }
+
+
+    Timer {
+        id: timer
+
+        interval: 3000 / internal.gameSpeed
+        repeat: true
+        running: internal.running
+
+        onTriggered: {
+            console.log("Timer is " + running + " at interval " + interval)
+
+            pixelGrid.update()
+            pixelGrid.drawCells()
+        }
     }
 
 
@@ -59,53 +119,9 @@ Page {
             spacing:  units.gu(3)
 
             Label {
-                id: statusLabel
-                fontSize: "x-large"
-                width: 0.5 * parent.width 
-                text: 0 + " " + i18n.tr("individuals")
-            }
+                fontSize: "large"
 
-
-            Button {
-                id: pauseButton
-                text: ""
-
-                iconName: "media-playback-pause"
-
-                width: height
-
-                onClicked: {
-                    if(internal.running)
-                    {
-                        timer.stop()
-                        internal.running = false
-
-                        iconName = "media-playback-start"
-                        nextStep.enabled = true
-                    }
-                    else
-                    {
-                        internal.running = true
-                        timer.start()
-
-                        nextStep.enabled = false
-                        iconName = "media-playback-pause"
-                    }
-                }
-            }
-
-            Button {
-                id: nextStep
-                text: ""
-
-                iconName: "media-seek-forward"
-                enabled: false 
-                width: height
-
-                onClicked: {
-                    pixelGrid.update()
-                    pixelGrid.drawCells()
-                }
+                text: i18n.tr("Speed:")
             }
 
             Button {
@@ -117,18 +133,17 @@ Page {
                 width: height
 
                 onClicked: {
-                    if (internal.gameSpeed > 100) {
-                        internal.gameSpeed = internal.gameSpeed - 100
-                    } else {
-                        internal.gameSpeed = 0
+                    if (internal.gameSpeed > 1) {
+                        internal.gameSpeed = internal.gameSpeed - 1
                     }
                 }
             }
 
             Label {
                 id: speedlabel
-                fontSize: "x-large"
-                text: 0.01 * internal.gameSpeed
+                fontSize: "large"
+
+                text: internal.gameSpeed
             }
 
             Button {
@@ -140,12 +155,18 @@ Page {
                 width: height
 
                 onClicked: {
-                    if (internal.gameSpeed < 900) {
-                        internal.gameSpeed = internal.gameSpeed + 100
-                    }
+                    if (internal.gameSpeed < 20) {
+                        internal.gameSpeed = internal.gameSpeed + 1
+                   }
                 }
             }
-           
+
+            Label {
+                id: statusLabel
+                fontSize: "large"
+
+                text: i18n.tr("Individuals:") + " 0"
+            }
         }
 
 
@@ -165,7 +186,7 @@ Page {
                     randomize()
                     drawCells()
 
-                    timer.start()
+                    internal.running = true
                 }
 
 
@@ -186,7 +207,7 @@ Page {
                 function drawCells() {
                     for(var i = 0; i < pixelGrid.getNumPixels(); i++)
                         // if(internal.state[i] !== internal.oldState[i])
-                        pixelGrid.setColorAt(i, internal.state[i] === true ? 
+                        pixelGrid.setColorAt(i, internal.state[i] === true ?
                            (internal.oldState[i] === true ? constants.aliveColors[internal.currentColor] : constants.newBornColors[internal.currentColor])
                            : constants.deadColor)
                 }
@@ -259,22 +280,7 @@ Page {
                                 count++
                         }
 
-                    statusLabel.text = count + " " + i18n.tr("individuals")
-                }
-            }
-
-            Timer {
-                id: timer
-
-                interval: internal.gameSpeed
-                running: false
-                repeat: false
-
-                onTriggered: {
-                    pixelGrid.update()
-                    pixelGrid.drawCells()
-
-                    start()
+                    statusLabel.text = i18n.tr("Individuals:") + " " + count
                 }
             }
 

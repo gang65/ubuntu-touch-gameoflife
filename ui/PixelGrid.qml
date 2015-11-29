@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.3
 
 /*!
     \brief A quadratic grid of animated "pixels" (colored rectangles)
@@ -27,7 +27,6 @@ Grid {
             height: pixelGrid.height / pixelGrid.rows
             width: pixelGrid.width / pixelGrid.columns
 
-            property color finalColor: color
             property int pixelIndex
 
 
@@ -38,7 +37,6 @@ Grid {
 
             function setColor(newColor)
             {
-                finalColor = Qt.lighter(newColor, 1.0)
                 color = Qt.lighter(newColor, 1.0)
             }
         }

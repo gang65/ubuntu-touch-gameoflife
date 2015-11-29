@@ -1,7 +1,6 @@
 import QtQuick 2.0
 
-import Ubuntu.Components 1.1
-
+import Ubuntu.Components 1.3
 
 /*!
     \brief MainView with a Label and Button elements.
@@ -13,7 +12,6 @@ MainView {
 
     applicationName: "com.ubuntu.developer.sturmflut.gameoflife"
 
-    useDeprecatedToolbar: false
 
     width: units.gu(70)
     height: units.gu(100)
@@ -24,5 +22,6 @@ MainView {
     PageStack {
         id: mainStack
     }
+
     Component.onCompleted: mainStack.push(Qt.resolvedUrl("ui/SimulationPage.qml"))
 }
