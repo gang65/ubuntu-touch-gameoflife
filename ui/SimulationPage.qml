@@ -186,7 +186,9 @@ Page {
                 function drawCells() {
                     for(var i = 0; i < pixelGrid.getNumPixels(); i++)
                         // if(internal.state[i] !== internal.oldState[i])
-                        pixelGrid.setColorAt(i, internal.state[i] === true ? constants.aliveColors[internal.currentColor] : constants.deadColor)
+                        pixelGrid.setColorAt(i, internal.state[i] === true ? 
+                           (internal.oldState[i] === true ? constants.aliveColors[internal.currentColor] : constants.newBornColors[internal.currentColor])
+                           : constants.deadColor)
                 }
 
 
