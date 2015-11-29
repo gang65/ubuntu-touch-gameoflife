@@ -10,6 +10,23 @@ Page {
     id: simulationPage
     title: i18n.tr("Game of Life")
 
+    head.actions: [
+
+        Action {
+            iconName: "reload"
+            text: i18n.tr("Reload")
+            onTriggered: {
+                timer.stop()
+
+                pixelGrid.randomize()
+
+                internal.running = true
+                pauseButton.iconName = "media-playback-pause"
+
+                timer.start()
+            }
+        }
+    ]
 
     Constants {
         id: constants
@@ -22,6 +39,7 @@ Page {
         property bool running: true
 
         property int currentColor: 0
+        property int gameSpeed: 700
 
         property var state: []
         property var oldState: []
@@ -38,12 +56,12 @@ Page {
         Row {
             id: statusRow
             width: parent.width
+            spacing:  units.gu(3)
 
             Label {
                 id: statusLabel
-
-                width: parent.width - filler.width - pauseButton.width - newButton.width
-
+                fontSize: "x-large"
+                width: 0.5 * parent.width 
                 text: 0 + " " + i18n.tr("individuals")
             }
 
@@ -63,43 +81,71 @@ Page {
                         internal.running = false
 
                         iconName = "media-playback-start"
+                        nextStep.enabled = true
                     }
                     else
                     {
                         internal.running = true
                         timer.start()
 
+                        nextStep.enabled = false
                         iconName = "media-playback-pause"
                     }
                 }
             }
 
+            Button {
+                id: nextStep
+                text: ""
 
-            Item {
-                id: filler
-                height: parent.height
+                iconName: "media-seek-forward"
+                enabled: false 
                 width: height
+
+                onClicked: {
+                    pixelGrid.update()
+                    pixelGrid.drawCells()
+                }
             }
 
-
             Button {
-                id: newButton
+                id: slowDown
+                text: ""
 
-                iconName: "reload"
+                iconName:  "remove"
 
                 width: height
 
                 onClicked: {
-                    timer.stop()
-
-                    pixelGrid.randomize()
-
-                    internal.running = true
-                    pauseButton.iconName = "media-playback-pause"
-
-                    timer.start()
+                    if (internal.gameSpeed > 100) {
+                        internal.gameSpeed = internal.gameSpeed - 100
+                    } else {
+                        internal.gameSpeed = 0
+                    }
                 }
             }
+
+            Label {
+                id: speedlabel
+                fontSize: "x-large"
+                text: 0.01 * internal.gameSpeed
+            }
+
+            Button {
+                id: speedUp
+                text: ""
+
+                iconName: "add"
+ 
+                width: height
+
+                onClicked: {
+                    if (internal.gameSpeed < 900) {
+                        internal.gameSpeed = internal.gameSpeed + 100
+                    }
+                }
+            }
+           
         }
 
 
@@ -127,7 +173,7 @@ Page {
                 {
                     for(var i = 0; i < pixelGrid.getNumPixels(); i++)
                     {
-                        if(Math.random() > 0.8)
+                        if(Math.random() > 0.6)
                             internal.state[i] =  true
                         else
                             internal.state[i] =  false
@@ -183,10 +229,10 @@ Page {
                 {
                     var numNeighbors = countNeighbors(x, y)
 
-                    if(numNeighbors === 3)
+                    if(numNeighbors === mainView.cellBirth)
                         return true
 
-                    if(getOldState(x, y) && numNeighbors === 2)
+                    if(getOldState(x, y) && numNeighbors === mainView.cellSurvival)
                         return true
 
                     return false
@@ -218,7 +264,7 @@ Page {
             Timer {
                 id: timer
 
-                interval: 96
+                interval: internal.gameSpeed
                 running: false
                 repeat: false
 
