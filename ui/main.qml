@@ -2,6 +2,7 @@ import QtQuick 2.0
 
 import Ubuntu.Components 1.3
 
+
 /*!
     \brief MainView with a Label and Button elements.
 */
@@ -19,9 +20,13 @@ MainView {
     property int cellSurvival: 2
     property int cellBirth: 3
 
-    PageStack {
-        id: mainStack
+    SimulationPage {
+
     }
 
-    Component.onCompleted: mainStack.push(Qt.resolvedUrl("ui/SimulationPage.qml"))
+//    PageStack {
+//        id: mainStack
+//    }
+
+//    Component.onCompleted: mainStack.push(Qt.resolvedUrl("ui/SimulationPage.qml"))
 }

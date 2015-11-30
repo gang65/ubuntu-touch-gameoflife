@@ -15,25 +15,11 @@ Page {
         Action {
             id: pauseAction
 
-            iconName: "media-playback-pause"
+            iconName: internal.running ? "media-playback-pause" : "media-playback-start"
             text: i18n.tr("Pause")
 
             onTriggered: {
-                if(internal.running)
-                {
-                    internal.running = false
-                    timer.stop()
-
-                    iconName = "media-playback-start"
-                    nextStepAction.enabled = true
-                }
-                else
-                {
-                    internal.running = true
-
-                    nextStepAction.enabled = false
-                    iconName = "media-playback-pause"
-                }
+                internal.running = !internal.running
 
                 console.log("Paused")
             }
@@ -45,7 +31,7 @@ Page {
             iconName: "media-seek-forward"
             text: i18n.tr("Forward")
 
-            enabled: false
+            enabled: !internal.running
 
             onTriggered: {
                 pixelGrid.update()
@@ -61,8 +47,6 @@ Page {
                 internal.running = false
 
                 pixelGrid.randomize()
-
-                pauseAction.iconName = "media-playback-pause"
 
                 pixelGrid.update()
                 pixelGrid.drawCells()
