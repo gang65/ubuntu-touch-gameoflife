@@ -17,8 +17,8 @@ MainView {
     width: units.gu(70)
     height: units.gu(100)
 
-    property int cellSurvival: 2
-    property int cellBirth: 3
+    property var cellSurvival: [ 2, 3 ]
+    property var cellBirth: [ 3 ]
 
     SimulationPage {
 

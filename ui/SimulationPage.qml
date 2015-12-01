@@ -285,10 +285,11 @@ Page {
                 {
                     var numNeighbors = countNeighbors(x, y)
 
-                    if(numNeighbors === mainView.cellBirth)
+                    // We don't want new birth if cell is already exists
+                    if (!getOldState(x, y) && mainView.cellBirth.indexOf(numNeighbors) > -1)
                         return true
 
-                    if(getOldState(x, y) && numNeighbors === mainView.cellSurvival)
+                    if (getOldState(x, y) && (mainView.cellSurvival.indexOf(numNeighbors) > -1)) 
                         return true
 
                     return false
