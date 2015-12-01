@@ -181,7 +181,7 @@ Page {
                    var pixelIndex = pixelGrid.childAt(mouse.x, mouse.y).pixelIndex
                    mouseInternal.addingCellState = !internal.state[pixelIndex]
                    internal.state[pixelIndex] = mouseInternal.addingCellState
-                   pixelGrid.drawCells()
+                   pixelGrid.drawSingleCell(pixelIndex)
                 }
 
                 onPositionChanged: { 
@@ -190,7 +190,7 @@ Page {
                    //We are not changing if it was already changed
                    if (internal.state[pixelIndex] !== mouseInternal.addingCellState) {
                       internal.state[pixelIndex] = mouseInternal.addingCellState
-                      pixelGrid.drawCells()
+                      pixelGrid.drawSingleCell(pixelIndex)
                    }
                 }
             }
@@ -233,13 +233,16 @@ Page {
                     internal.currentColor = Math.floor(constants.aliveColors.length * Math.random())
                 }
 
+                function drawSingleCell(i) {
+                    pixelGrid.setColorAt(i, internal.state[i] === true ?
+                       (internal.oldState[i] === true ? constants.aliveColors[internal.currentColor] : constants.newBornColors[internal.currentColor])
+                       : constants.deadColor)
+                }
+
 
                 function drawCells() {
                     for(var i = 0; i < pixelGrid.getNumPixels(); i++)
-                        // if(internal.state[i] !== internal.oldState[i])
-                        pixelGrid.setColorAt(i, internal.state[i] === true ?
-                           (internal.oldState[i] === true ? constants.aliveColors[internal.currentColor] : constants.newBornColors[internal.currentColor])
-                           : constants.deadColor)
+                        drawSingleCell(i)
                 }
 
 
