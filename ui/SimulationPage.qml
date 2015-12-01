@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 
 import Ubuntu.Components 1.3
 
@@ -21,7 +21,6 @@ Page {
             onTriggered: {
                 internal.running = !internal.running
 
-                console.log("Paused")
             }
         },
 
@@ -40,18 +39,28 @@ Page {
         },
 
         Action {
+            id: cleanUp
+
+            iconName: "select-none"
+            text: i18n.tr("Clean world")
+
+            onTriggered: {
+                internal.running = false
+
+                pixelGrid.cleanWorld()
+                pixelGrid.drawCells()
+            }
+        },
+
+        Action {
             iconName: "reload"
-            text: i18n.tr("Reload")
+            text: i18n.tr("Random world")
 
             onTriggered: {
                 internal.running = false
 
                 pixelGrid.randomize()
-
-                pixelGrid.update()
                 pixelGrid.drawCells()
-
-                internal.running = true
             }
         }
     ]
@@ -69,8 +78,13 @@ Page {
         property int currentColor: 0
         property int gameSpeed: 4
 
+        property int stepNumber: 0
+
         property var state: []
         property var oldState: []
+
+        //What kind of cells we are adding (dead or alive)
+        property bool addingCellState: false
     }
 
 
@@ -82,8 +96,6 @@ Page {
         running: internal.running
 
         onTriggered: {
-            console.log("Timer is " + running + " at interval " + interval)
-
             pixelGrid.update()
             pixelGrid.drawCells()
         }
@@ -100,7 +112,7 @@ Page {
         Row {
             id: statusRow
             width: parent.width
-            spacing:  units.gu(3)
+            spacing:  units.gu(2)
 
             Label {
                 fontSize: "large"
@@ -149,7 +161,7 @@ Page {
                 id: statusLabel
                 fontSize: "large"
 
-                text: i18n.tr("Individuals:") + " 0"
+                text: i18n.tr("Step:") + " 0   " + i18n.tr("Cells:") + " 0" 
             }
         }
 
@@ -157,6 +169,29 @@ Page {
         Rectangle {
             width: parent.width
             height: parent.height - statusRow.height
+
+            MouseArea {
+                anchors.fill: parent
+
+                onPressed: { 
+                   var cellNumber = Math.floor(mouseY / pixelGrid.getCellHeight()) * constants.size + 
+                                    Math.floor(mouseX / pixelGrid.getCellWidth())
+                   internal.addingCellState = !internal.state[cellNumber]
+                   internal.state[cellNumber] = internal.addingCellState
+                   pixelGrid.drawCells()
+                }
+
+                onPositionChanged: { 
+                   var cellNumber = Math.floor(mouseY / pixelGrid.getCellHeight()) * constants.size + 
+                                    Math.floor(mouseX / pixelGrid.getCellWidth())
+
+                   //We are not changing if it was already changed
+                   if (internal.state[cellNumber] !== internal.addingCellState) {
+                      internal.state[cellNumber] = internal.addingCellState
+                      pixelGrid.drawCells()
+                   }
+                }
+            }
 
             PixelGrid {
                 id: pixelGrid
@@ -173,6 +208,15 @@ Page {
                     internal.running = true
                 }
 
+                function cleanWorld()
+                {
+                    for(var i = 0; i < pixelGrid.getNumPixels(); i++)
+                    {
+                        internal.state[i] =  false
+                    }
+
+                    internal.currentColor = Math.floor(constants.aliveColors.length * Math.random())
+                }
 
                 function randomize()
                 {
@@ -249,6 +293,7 @@ Page {
                 function update()
                 {
                     // Swap arrays
+                    internal.stepNumber += 1
                     var t = internal.oldState
                     internal.oldState = internal.state
                     internal.state = t
@@ -264,33 +309,7 @@ Page {
                                 count++
                         }
 
-                    statusLabel.text = i18n.tr("Individuals:") + " " + count
-                }
-            }
-
-
-            MouseArea {
-                QtObject {
-                    id: mouseInternal
-
-                    property bool mouseDown: false
-                }
-
-                anchors.fill: parent
-
-                acceptedButtons: Qt.LeftButton
-
-                onPressed: mouseInternal.mouseDown = true
-
-                onReleased: mouseInternal.mouseDown = false
-
-                onPositionChanged: {
-                    if(mouseInternal.mouseDown)
-                    {
-                        var pixelIndex = pixelGrid.childAt(mouse.x, mouse.y).pixelIndex
-
-                        internal.state[pixelIndex] = true
-                    }
+                    statusLabel.text =  i18n.tr("Step:") + " " + internal.stepNumber + "   " + i18n.tr("Cells:") + " " + count
                 }
             }
         }

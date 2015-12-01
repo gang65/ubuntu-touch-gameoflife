@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.4
 
 import Ubuntu.Components 1.3
 
@@ -24,8 +24,8 @@ Grid {
         Rectangle {
             id: rectangle
 
-            height: pixelGrid.height / pixelGrid.rows
-            width: pixelGrid.width / pixelGrid.columns
+            height: getCellHeight()
+            width: getCellWidth()
 
             property int pixelIndex
 
@@ -66,6 +66,13 @@ Grid {
         }
     }
 
+    function getCellHeight() {
+        return pixelGrid.height / pixelGrid.rows
+    }
+
+    function getCellWidth() {
+        return pixelGrid.width / pixelGrid.columns
+    }
 
     /*!
         \brief Get the size of the grid.
