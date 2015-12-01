@@ -24,8 +24,8 @@ Grid {
         Rectangle {
             id: rectangle
 
-            height: getCellHeight()
-            width: getCellWidth()
+            height: pixelGrid.height / pixelGrid.rows
+            width: pixelGrid.width / pixelGrid.columns
 
             property int pixelIndex
 
@@ -66,13 +66,6 @@ Grid {
         }
     }
 
-    function getCellHeight() {
-        return pixelGrid.height / pixelGrid.rows
-    }
-
-    function getCellWidth() {
-        return pixelGrid.width / pixelGrid.columns
-    }
 
     /*!
         \brief Get the size of the grid.

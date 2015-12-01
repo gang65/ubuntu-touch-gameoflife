@@ -46,6 +46,7 @@ Page {
 
             onTriggered: {
                 internal.running = false
+                internal.stepNumber = 0
 
                 pixelGrid.cleanWorld()
                 pixelGrid.drawCells()
@@ -58,6 +59,7 @@ Page {
 
             onTriggered: {
                 internal.running = false
+                internal.stepNumber = 0
 
                 pixelGrid.randomize()
                 pixelGrid.drawCells()
@@ -82,9 +84,6 @@ Page {
 
         property var state: []
         property var oldState: []
-
-        //What kind of cells we are adding (dead or alive)
-        property bool addingCellState: false
     }
 
 
@@ -173,21 +172,24 @@ Page {
             MouseArea {
                 anchors.fill: parent
 
+                QtObject {
+                    id: mouseInternal
+                    property bool addingCellState: false
+                }
+
                 onPressed: { 
-                   var cellNumber = Math.floor(mouseY / pixelGrid.getCellHeight()) * constants.size + 
-                                    Math.floor(mouseX / pixelGrid.getCellWidth())
-                   internal.addingCellState = !internal.state[cellNumber]
-                   internal.state[cellNumber] = internal.addingCellState
+                   var pixelIndex = pixelGrid.childAt(mouse.x, mouse.y).pixelIndex
+                   mouseInternal.addingCellState = !internal.state[pixelIndex]
+                   internal.state[pixelIndex] = mouseInternal.addingCellState
                    pixelGrid.drawCells()
                 }
 
                 onPositionChanged: { 
-                   var cellNumber = Math.floor(mouseY / pixelGrid.getCellHeight()) * constants.size + 
-                                    Math.floor(mouseX / pixelGrid.getCellWidth())
+                   var pixelIndex = pixelGrid.childAt(mouse.x, mouse.y).pixelIndex
 
                    //We are not changing if it was already changed
-                   if (internal.state[cellNumber] !== internal.addingCellState) {
-                      internal.state[cellNumber] = internal.addingCellState
+                   if (internal.state[pixelIndex] !== mouseInternal.addingCellState) {
+                      internal.state[pixelIndex] = mouseInternal.addingCellState
                       pixelGrid.drawCells()
                    }
                 }
