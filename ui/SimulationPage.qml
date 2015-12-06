@@ -1,6 +1,6 @@
 import QtQuick 2.4
 
-import Ubuntu.Components 1.3
+import Ubuntu.Components 1.2
 
 
 /*!
@@ -34,6 +34,20 @@ Page {
 
             onTriggered: {
                 pixelGrid.update()
+                pixelGrid.drawCells()
+            }
+        },
+
+        Action {
+            id: settings
+
+            iconName: "settings"
+            text: i18n.tr("Choose Life")
+
+            onTriggered: {
+                internal.running = false
+                internal.currentColor = mainView.currentCellularAutomaton % constants.aliveColors.length;
+                mainStack.push(Qt.resolvedUrl("LifeChooser.qml"))
                 pixelGrid.drawCells()
             }
         },
@@ -224,7 +238,7 @@ Page {
                 {
                     for(var i = 0; i < pixelGrid.getNumPixels(); i++)
                     {
-                        if(Math.random() > 0.6)
+                        if(Math.random() > 0.7)
                             internal.state[i] =  true
                         else
                             internal.state[i] =  false
